@@ -41,9 +41,9 @@ Segue a lista de alguns endpoints da API:
 
  - POST - https://localhost:8088/api/login
  - GET - https://localhost:8088/api/users
- - POST - https://localhost:8088/api/schedules 
- - PUT - https://localhost:8088/api/schedules/{schedule}
- - DELETE - https://localhost:8088/api/schedules/{schedule}
+ - POST - https://localhost:8088/api/users 
+ - PUT - https://localhost:8088/api/users/{user}
+ - DELETE - https://localhost:8088/api/users/{user}
 
 
 Também será disponibilizado uma collection no formato postman para validação dos Endpoints e para detalhamento maior a respeito dos payloads e retornos. 
