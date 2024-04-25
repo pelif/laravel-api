@@ -1,0 +1,69 @@
+version: '3.7'
+services:
+    db_api_user:
+        container_name: db_lara_api_user
+        image: mysql:5.7
+        volumes:
+            - dbdata:/var/lib/mysql
+        environment:
+            - "MYSQL_DATABASE=laravel_api_tests"
+            - "MYSQL_USER=laravel_tests"
+            - "MYSQL_PASSWORD=laravel_tests"
+            - "MYSQL_ROOT_PASSWORD=1234567"
+            - "MYSQL_PORT=3306"
+        ports:
+            - 3306:3306
+        networks:
+            laravelAPIUser:
+                ipv4_address: 160.80.0.2
+
+    app_api_user:
+        container_name: app_lara_api_user
+        build:
+            context: .
+            dockerfile: app.Dockerfile
+        working_dir: /var/www
+        ports:
+            - 8001:80
+        volumes:
+            - /var/www/storage
+            - ./:/var/www
+        env_file: '.env'
+        environment:
+            - "DB_HOST=db_api_user"
+            - "DB_PORT=3306"
+        links:
+            - db_api_user
+        depends_on:
+            - db_api_user
+        networks:
+            laravelAPIUser:
+                ipv4_address: 160.80.0.3
+
+    nginx_api_user:
+        container_name: nginx_lara_api_user
+        build:
+            context: .
+            dockerfile: web.Dockerfile
+        ports:
+            - 8088:80
+        links:
+            - app_api_user
+        networks:
+            - laravelAPIUser
+        volumes:
+            - ./:/var/www
+            - ./nginx/access.log:/var/log/nginx/access.log
+            - ./nginx/error.log:/var/log/nginx/error.log
+        networks:
+            laravelAPIUser:
+                ipv4_address: 160.80.0.4
+
+networks:
+    laravelAPIUser:
+        driver: bridge
+        ipam:
+            config:
+                - subnet: 160.80.0.0/16
+volumes:
+    dbdata:
